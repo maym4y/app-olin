@@ -1,5 +1,6 @@
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import Drawer from "expo-router/drawer";
+import { StatusBar } from "expo-status-bar";
 import { colors } from "../constants/colors";
 
 export default function RootLayout() {
@@ -11,6 +12,8 @@ export default function RootLayout() {
     )
   }
   return (
+    <>
+    <StatusBar style="dark" />
     <Drawer
       drawerContent={() => <CustomDrawerContent />}
       screenOptions={{
@@ -21,5 +24,6 @@ export default function RootLayout() {
       <Drawer.Screen name="login" options={{ headerShown: false }} />
       <Drawer.Screen name="(tabs)" options={{ headerShown: false }} />
     </Drawer>
+    </>
   );
 }

@@ -3,12 +3,19 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { Tabs } from "expo-router";
 import { colors } from "../../constants/colors";
+import Notifications from "../notifications";
+import SearchBar from "../search-bar";
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerLeft: () => <DrawerToggleButton tintColor={colors.navy}/>,
+        headerShadowVisible: false,
+        headerTitle: () => <SearchBar />,
+        headerLeft: () => <DrawerToggleButton />,
+        headerRight: () => <Notifications />,
+        headerStyle: { backgroundColor: colors.gainsboro},
+        contentStyle: { backgroundColor: colors.gainsboro },
         tabBarActiveTintColor: colors.gainsboro,
         tabBarInactiveTintColor: colors.steel,
         tabBarStyle: {

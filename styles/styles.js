@@ -38,5 +38,27 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.gainsboro,
+  },
+  searchBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: colors.gainsboro,
+    borderRadius: 30,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: colors.gray
+  },
+  searchIcon: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchInput: {
+    width: 150,
+  },
+  notification: {
+    paddingRight: '25'
   }
 });
