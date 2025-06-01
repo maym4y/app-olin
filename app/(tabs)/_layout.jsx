@@ -2,9 +2,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { Tabs } from "expo-router";
+import Notifications from "../../components/notifications";
+import SearchBar from "../../components/search-bar";
 import { colors } from "../../constants/colors";
-import Notifications from "../notifications";
-import SearchBar from "../search-bar";
 
 export default function TabsLayout() {
   return (

@@ -60,5 +60,8 @@ export const styles = StyleSheet.create({
   },
   notification: {
     paddingRight: '25'
+  },
+  caseChart: {
+    width: '100%'
   }
 });
