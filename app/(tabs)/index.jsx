@@ -1,4 +1,6 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import CaseManagement from "../../components/case-management";
+import RecentCases from "../../components/recent-cases";
 import { styles } from "../../styles/styles";
 
 // Dashboard de casos
@@ -6,10 +8,10 @@ export default function Dashboard() {
     return (
         <View style={styles.body}>
             <View>
-                <Text>Gerenciamento de Casos:</Text>
+                <CaseManagement />
             </View>
             <View>
-                <Text>Casos Recentes:</Text>
+                <RecentCases />
             </View>
         </View>
     )
