@@ -4,6 +4,7 @@ import { colors } from "../constants/colors";
 export const styles = StyleSheet.create({
   body: {
     backgroundColor: colors.gainsboro,
+    height: '100%'
   },
   iconView: {
     alignItems: 'center',
