@@ -11,16 +11,14 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShadowVisible: false,
-        headerTitle: () => <SearchBar />,
         headerLeft: () => <DrawerToggleButton />,
+        headerTitle: () => <SearchBar />,
         headerRight: () => <Notifications />,
         headerStyle: { backgroundColor: colors.gainsboro},
         contentStyle: { backgroundColor: colors.gainsboro },
         tabBarActiveTintColor: colors.gainsboro,
         tabBarInactiveTintColor: colors.steel,
-        tabBarStyle: {
-          backgroundColor: colors.navy,
-        },
+        tabBarStyle: { backgroundColor: colors.navy },
       }}
     >
       <Tabs.Screen

@@ -62,6 +62,24 @@ export const styles = StyleSheet.create({
     paddingRight: '25'
   },
   caseChart: {
-    width: '100%'
+    height: 210,
+    width: 400,
+  },
+  listDisplay: {
+    marginBottom: 150,
+  },
+  caseCard: {
+    backgroundColor: colors.navy,
+    borderRadius: 10,
+    margin: 10,
+    padding: 5,
+  },
+  cardBottom: {
+    flex: 1,
+    flexDirection: 'row',
+    fontSize: 8
+  },
+  lightText: {
+    color: colors.gainsboro,
   }
 });

@@ -1,4 +1,4 @@
-import { Image, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import donutChart from '../assets/images/donut-chart.png';
 import { styles } from "../styles/styles";
 
