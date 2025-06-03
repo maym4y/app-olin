@@ -98,7 +98,7 @@ export default function Login() {
             },
             styles.loginButton,
           ]}
-          onPress={() => router.replace('/casos')}
+          onPress={() => router.replace('/(tabs)')}
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </Pressable>
