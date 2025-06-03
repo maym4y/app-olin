@@ -7,6 +7,7 @@ import SearchBar from "../../components/search-bar";
 import { colors } from "../../constants/colors";
 
 export default function TabsLayout() {
+
   return (
     <Tabs
       screenOptions={{
