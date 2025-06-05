@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -19,7 +20,7 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
 
-  const API_URL = "https://case-api-icfc.onrender.com";
+  const API_URL = "https://case-api-icfc.onrender.com"
 
   const handleLogin = async () => {
     setMensagem("Conectando ao servidor... (pode levar alguns segundos)");
@@ -31,18 +32,16 @@ export default function Login() {
 
       console.log(req.status);
 
-      const resposta = await fetch(`${API_URL}/api/login`, {
-        method: "POST",
+      const resposta = await axios.post("https://case-api-icfc.onrender.com/api/login", {
         body: {
-          email: email.trim(),
+          email: email.trim,
           password: senha.trim(),
-        },
-        headers: { "Content-type": "application/json" },
+        }
       });
 
-      console.log(JSON.stringify(resposta));
-      const token = resposta.data.token;
-      const userData = resposta.data.user;
+      console.log(resposta.json());
+      const token =  await resposta.token;
+      const userData =  await resposta.user;
 
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("user", JSON.stringify(userData));
@@ -51,7 +50,7 @@ export default function Login() {
 
       // Navega para o dashboard após login bem-sucedido
       setTimeout(() => {
-        router.replace("/(tabs)");
+        router.replace("/dashboard");
       }, 1500);
     } catch (erro) {
       console.error("Erro completo:", erro);
@@ -86,6 +85,7 @@ export default function Login() {
         />
         <TextInput
           label="Senha"
+          secureTextEntry={true}
           value={senha}
           onChangeText={setSenha}
           placeholder="********"
@@ -94,11 +94,11 @@ export default function Login() {
         <Pressable
           style={({ pressed }) => [
             {
-              backgroundColor: pressed ? colors.steel : colors.navy,
+              backgroundColor: pressed ? colors.steel : colors.midnightNavy,
             },
             styles.loginButton,
           ]}
-          onPress={() => router.replace('/(tabs)')}
+          onPress={() => router.replace('/dashboard')}
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </Pressable>
@@ -106,3 +106,5 @@ export default function Login() {
     </ScrollView>
   );
 }
+
+// () => router.replace('/(tabs)')

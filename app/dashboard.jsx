@@ -1,21 +1,36 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
 import { Button, Modal, Pressable, View } from "react-native";
-import CaseManagement from "../../components/case-management";
-import RecentCases from "../../components/recent-cases";
-import { styles } from "../../styles/styles";
-import CadastrarCasoScreen from "../add-caso";
+import CaseManagement from "../components/case-management";
+import RecentCases from "../components/recent-cases";
+import mockCasos from '../constants/casos.mock';
+import { styles } from "../styles/styles";
+import CadastrarCasoScreen from "./add-caso";
 
 // Dashboard de casos
 export default function Dashboard() {
   const [casos, setCasos] = useState([]);
+  const [user, setUser] = useState({});
   const [historico, setHistorico] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
   const API_URL = "https://case-api-icfc.onrender.com";
+  
+  const fetchUser = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('user');
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  }
 
   const fetchCases = async () => {
-    const res = await fetch(`${API_URL}/api/casos`, {});
+    const res = await fetch(`${API_URL}/api/casos`);
     const data = await res.json();
     setCasos(data);
     const historia = [...data].sort(
@@ -24,9 +39,9 @@ export default function Dashboard() {
     setHistorico(historia.slide(2));
   };
 
-  useEffect(() => {
-    fetchCases();
-  });
+  // useEffect(() => {
+  //   fetchCases();
+  // });
 
   const closeModal = () => {
     return (
@@ -57,7 +72,7 @@ export default function Dashboard() {
         }}
       />
       <View>
-        <RecentCases historico={historico} />
+        <RecentCases historico={mockCasos()} />
       </View>
     </View>
   );
