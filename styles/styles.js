@@ -2,6 +2,9 @@ import { StyleSheet } from "react-native";
 import { colors } from "../constants/colors";
 
 export const styles = StyleSheet.create({
+  header: {
+    backgroundColor: colors.gainsboro
+  },
   body: {
     backgroundColor: colors.gainsboro,
     height: '100%'
@@ -34,7 +37,7 @@ export const styles = StyleSheet.create({
     margin: 15,
     padding: 12,
     borderRadius: 5,
-    backgroundColor: colors.navy,
+    backgroundColor: colors.midnightNavy,
     alignItems: 'center',
   },
   buttonText: {
@@ -49,7 +52,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: colors.gray
+    backgroundColor: colors.grayBlue
   },
   searchIcon: {
     display: 'flex',
@@ -70,15 +73,16 @@ export const styles = StyleSheet.create({
     marginBottom: 150,
   },
   caseCard: {
-    backgroundColor: colors.navy,
-    borderRadius: 10,
+    backgroundColor: colors.midnightNavy,
+    borderRadius: 15,
     margin: 10,
     padding: 5,
   },
   cardBottom: {
     flex: 1,
     flexDirection: 'row',
-    fontSize: 8
+    fontSize: 8,
+    alignContent: 'space-between'
   },
   lightText: {
     color: colors.gainsboro,
