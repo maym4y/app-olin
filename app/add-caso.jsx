@@ -16,6 +16,7 @@ export default function CadastrarCasoScreen(props) {
   const [ID, setIDcaso] = useState("");
   const [responsavel, setResponsavel] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [descricaoHeight, setDescricaoHeight] = useState(100);
   const [data, setData] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [status, setStatus] = useState("Em andamento");
@@ -79,12 +80,17 @@ export default function CadastrarCasoScreen(props) {
         onChangeText={setResponsavel}
       />
 
-      <Text style={styles.label}>Descrição:</Text>
+      <Text style={styles.label}>Descrição :</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Descrição"
+        style={[styles.inputMultiline, { height: descricaoHeight }]}
+        placeholder="Digite a descrição"
         value={descricao}
         onChangeText={setDescricao}
+        multiline
+        textAlignVertical="top"
+        onContentSizeChange={(event) =>
+          setDescricaoHeight(event.nativeEvent.contentSize.height + 20)
+        }
       />
 
       <Text style={styles.label}>Data de criação:</Text>
@@ -125,7 +131,7 @@ export default function CadastrarCasoScreen(props) {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleCadastrar}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
+        <Text style={styles.buttonText}>SALVAR</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -155,6 +161,17 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#fff",
   },
+
+  inputMultiline: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+    textAlignVertical: 'top',
+  },
+
   picker: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -194,8 +211,10 @@ const styles = StyleSheet.create({
     borderColor: "#003366",
     borderWidth: 2,
     padding: 12,
+    paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
+    alignSelf: 'flex-start', 
     marginTop: 10,
   },
 
