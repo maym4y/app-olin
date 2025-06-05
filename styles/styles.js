@@ -7,7 +7,9 @@ export const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: colors.gainsboro,
-    height: '100%'
+    height: '100%',
+    padding: 5,
+    paddingBottom: 50
   },
   iconView: {
     alignItems: 'center',
@@ -49,10 +51,11 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.gainsboro,
     borderRadius: 30,
-    width: '100%',
+    paddingHorizontal: 15,
+    alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: colors.grayBlue
+    justifyContent: 'space-between',
+    backgroundColor: colors.lightSlateGray
   },
   searchIcon: {
     display: 'flex',
@@ -60,7 +63,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchInput: {
-    width: 150,
+    flex: 1,
+    maxWidth: '80%'
   },
   notification: {
     paddingRight: '25'

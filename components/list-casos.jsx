@@ -1,5 +1,5 @@
 import { FlatList } from "react-native";
-import ShowCard from "./show-card";
+import ShowCard from "./caso-card";
 
 export default function ListItems(props) {
   const { allCasos } = props;

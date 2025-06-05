@@ -72,7 +72,7 @@ export default function Dashboard() {
         }}
       />
       <View>
-        <RecentCases historico={mockCasos()} />
+        <RecentCases historico={mockCasos} />
       </View>
     </View>
   );

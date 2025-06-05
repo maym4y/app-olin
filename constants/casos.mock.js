@@ -1,5 +1,4 @@
-export default function cases() {
-    return ([
+export const casos =[
     {
         "_id": "683db0107542dd7fae3bb5d3",
         "titulo": "Lesão Corporal em Acidente de Trânsito",
@@ -341,5 +340,6 @@ export default function cases() {
         },
         "ultimaAtualizacao": "2025-06-03T22:36:47.043Z"
     }
-])
-}
+]
+
+export default casos;

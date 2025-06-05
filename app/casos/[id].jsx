@@ -1,13 +1,28 @@
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import cases from "../../constants/casos.mock";
 import colors from "../../constants/colors";
 
-export default function CasoDetalhes() {
+export default function CasoDetalhes(props) {
     const [pagina, setPagina] = useState('caso');
+    const [caso, setCaso] = useState({});
     const [evidencias, setEvidencias] = useState([]);
     const [laudos, setLaudos] = useState([]);
+
   const { id } = useLocalSearchParams();
+  const getCaso = () => {
+    const caso = cases.find(e => e._id == id);
+    setCaso(caso);
+  }
+  const getEvidencia = () => {
+
+  }
+
+  useEffect(() => {
+    getCaso();
+  }, [])
+
   return (
     <View>
       <View style={estilos.casoMenu}>
@@ -21,7 +36,11 @@ export default function CasoDetalhes() {
         <Text>Laudos</Text>
         </Pressable>
       </View>
-      <Text>{pagina}</Text>
+      <Text>{caso.titulo}</Text>
+      <Text>{caso.data.split("T")[0]}</Text>
+      <Text>{caso.status}</Text>
+      <Text>{caso.tipo}</Text>
+      <Text>{caso.descricao}</Text>
     </View>
   );
 }
