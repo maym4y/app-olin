@@ -66,42 +66,52 @@ npx expo start
 olin-mobile/
 │
 ├── app/
-│   ├── casos/
-│   │   ├── [id].jsx
-│   │   └── index.jsx
-│   ├── evidencias/
-│   │   ├── [id].jsx
-│   ├── _layout.jsx
-│   ├── dashboard.jsx
-│   ├── index.jsx
-│   └── login.jsx
+│ ├── casos/
+│ │ ├── [id].jsx
+│ │ └── index.jsx
+│ ├── evidencias/
+│ │ └── [id].jsx
+│ ├── vitimas/
+│ │ ├── [id].jsx
+│ │ └── [id]/
+│ │ └── odontograma.jsx
+│ ├── _layout.jsx
+│ ├── dashboard.jsx
+│ ├── index.jsx
+│ └── login.jsx
 │
 ├── assets/
-│   └── images/
-│       └── logo.png
+│ ├── images/
+│ │ ├── logo.png
+│ │ └── fdgdfg
 │
 ├── components/
-│   ├── auth/
-│   │   └── auth-context.jsx
-│   ├── cases/
-│   │   └── recent-cases.jsx
-│   ├── forms/
-│   │   ├── edit-evidence-modal.jsx
-│   │   ├── new-case-modal.jsx
-│   │   ├── new-evidence-modal.jsx
-│   │   └── new-relatorio-modal.jsx
-│   └── lists/
-│       ├── list-evidencias.jsx
-│       └── list-relatorios.jsx
+│ ├── auth/
+│ │ └── auth-context.jsx
+│ ├── cases/
+│ │ └── recent-cases.jsx
+│ ├── forms/
+│ │ ├── edit-evidence-modal.jsx
+│ │ ├── new-case-modal.jsx
+│ │ ├── new-evidence-modal.jsx
+│ │ ├── new-relatorio-modal.jsx
+│ │ └── new-vitima-modal.jsx
+│ ├── lists/
+│ │ ├── list-evidencias.jsx
+│ │ ├── list-relatorios.jsx
+│ │ └── list-vitimas.jsx
+│ └── modal-nova-vitima.jsx
 │
 ├── constants/
-│   └── colors.js
-├── styles/
-│   └── styles.js
+│ └── colors.js
 │
-├── App.js
-├── app.json
+├── styles/
+│ └── styles.js
+│
 ├── .gitignore
+├── App.js
+├── README.md
+├── app.json
 ├── package.json
 └── package-lock.json
 ```
