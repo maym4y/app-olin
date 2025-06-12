@@ -118,22 +118,9 @@ olin-mobile/
 
 ---
 
-## 📸 Demonstrações
-
-> *(Adicione aqui prints ou GIFs do app em funcionamento)*
-
----
-
 ## 📄 Licença
 
 Este projeto ainda **não possui uma licença** definida.
-
----
-
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas!  
-Sinta-se à vontade para abrir _issues_ ou enviar _pull requests_.
 
 ---
 
