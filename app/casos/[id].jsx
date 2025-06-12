@@ -16,8 +16,10 @@ import Swiper from "react-native-screens-swiper";
 import { colors, statusColors } from "../../constants/colors";
 import NewEvidenceModal from "../../components/forms/new-evidence-modal";
 import NewRelatorioModal from "../../components/forms/new-relatorio-modal";
+import ModalNovaVitima from "../../components/modal-nova-vitima";
 import ListEvidencias from "../../components/lists/list-evidencias";
 import ListRelatorios from "../../components/lists/list-relatorios";
+import ListVitimas from "../../components/lists/list-vitimas";
 
 const API_URL = "https://case-api-icfc.onrender.com";
 
@@ -168,111 +170,13 @@ const RelatoriosTab = ({ relatorios, onAddRelatorio }) => (
   />
 );
 
-// Tab 4: Vítimas
-const VitimasTab = ({ vitimas, onAddVitima }) => (
-  <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-    <View style={{
-      backgroundColor: 'white',
-      margin: 20,
-      borderRadius: 12,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-      elevation: 2,
-    }}>
-      <View style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0'
-      }}>
-        <Text style={{
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: '#333'
-        }}>
-          Vítimas ({vitimas.length})
-        </Text>
-        <Pressable onPress={onAddVitima}>
-          <AntDesign name="plus" size={20} color={colors.steelBlue} />
-        </Pressable>
-      </View>
-      
-      <View style={{ paddingVertical: 10 }}>
-        {vitimas.length > 0 ? (
-          vitimas.map((vitima, index) => (
-            <Pressable 
-              key={vitima._id || index} 
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 20,
-                paddingVertical: 15,
-                borderBottomWidth: index < vitimas.length - 1 ? 1 : 0,
-                borderBottomColor: '#f0f0f0'
-              }}
-            >
-              <MaterialIcons name="person" size={24} color="#666" />
-              <View style={{ marginLeft: 15, flex: 1 }}>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#333',
-                  fontWeight: '500',
-                  marginBottom: 2
-                }}>
-                  {vitima.nome || `Vítima ${index + 1}`}
-                </Text>
-                <Text style={{
-                  fontSize: 14,
-                  color: '#999'
-                }}>
-                  NIC: {vitima.nic || 'Não informado'}
-                </Text>
-                {vitima.idade && (
-                  <Text style={{
-                    fontSize: 12,
-                    color: '#666',
-                    marginTop: 2
-                  }}>
-                    {vitima.idade} anos • {vitima.genero || 'Gênero não informado'}
-                  </Text>
-                )}
-              </View>
-              <AntDesign name="right" size={16} color="#ccc" />
-            </Pressable>
-          ))
-        ) : (
-          <View style={{
-            paddingHorizontal: 20,
-            alignItems: 'center',
-            paddingVertical: 40
-          }}>
-            <MaterialIcons name="person" size={48} color="#ccc" />
-            <Text style={{
-              fontSize: 16,
-              color: '#999',
-              marginTop: 15,
-              textAlign: 'center'
-            }}>
-              Nenhuma vítima cadastrada
-            </Text>
-            <Text style={{
-              fontSize: 14,
-              color: '#ccc',
-              marginTop: 5,
-              textAlign: 'center'
-            }}>
-              Toque no + para adicionar a primeira vítima
-            </Text>
-          </View>
-        )}
-      </View>
-    </View>
-  </ScrollView>
+// Tab 4: Vítimas - USANDO O COMPONENTE COMPLETO QUE CRIAMOS
+const VitimasTab = ({ vitimas, onAddVitima, onVitimaPress }) => (
+  <ListVitimas 
+    vitimas={vitimas}
+    onVitimaPress={onVitimaPress}
+    onAddVitima={onAddVitima}
+  />
 );
 
 export default function CaseDetails() {
@@ -287,6 +191,7 @@ export default function CaseDetails() {
   // Estados do modal
   const [showEvidenceModal, setShowEvidenceModal] = useState(false);
   const [showRelatorioModal, setShowRelatorioModal] = useState(false);
+  const [showVitimaModal, setShowVitimaModal] = useState(false);
 
   const { id } = useLocalSearchParams();
   const router = useRouter();
@@ -310,14 +215,19 @@ export default function CaseDetails() {
         axios.get(`${API_URL}/api/evidencias?casoId=${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         }).catch(() => ({ data: [] })),
-        axios.get(`${API_URL}/api/vitimas?casoId=${id}`, {
+        axios.get(`${API_URL}/api/vitimas/caso/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
-        }).catch(() => ({ data: [] }))
+        }).catch((err) => {
+          console.log('Erro ao buscar vítimas:', err.response?.status);
+          return { data: [] };
+        })
       ]);
 
       setCaso(casoResponse.data);
       setEvidencias(evidenciasResponse.data);
       setVitimas(vitimasResponse.data);
+
+      console.log('Vítimas carregadas:', vitimasResponse.data.length);
 
       // Buscar todos os tipos de relatórios/laudos
       await fetchAllRelatorios(token);
@@ -340,6 +250,20 @@ export default function CaseDetails() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  // Função para buscar vítimas do caso
+  const fetchVitimas = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/api/vitimas/caso/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVitimas(response.data);
+      console.log('Vítimas atualizadas:', response.data.length);
+    } catch (error) {
+      console.error('Erro ao buscar vítimas:', error);
     }
   };
 
@@ -377,7 +301,7 @@ export default function CaseDetails() {
       });
 
       setRelatorios(todosRelatorios);
-      console.log('Relatórios carregados:', todosRelatorios);
+      console.log('Relatórios carregados:', todosRelatorios.length);
 
     } catch (error) {
       console.error('Erro ao buscar relatórios:', error);
@@ -412,7 +336,18 @@ export default function CaseDetails() {
   };
 
   const handleAddVitima = () => {
-    Alert.alert("Em breve", "Funcionalidade de adicionar vítima será implementada em breve.");
+    setShowVitimaModal(true);
+  };
+
+  const handleVitimaAdded = (novaVitima) => {
+    // Atualizar lista de vítimas
+    setVitimas(prev => [novaVitima, ...prev]);
+    console.log('Nova vítima adicionada:', novaVitima.nome);
+  };
+
+  const handleVitimaPress = (vitima) => {
+    // Navegar para detalhes da vítima
+    router.push(`/vitimas/${vitima._id}`);
   };
 
   if (loading) {
@@ -494,9 +429,13 @@ export default function CaseDetails() {
       props: { relatorios, onAddRelatorio: handleAddLaudo }
     },
     {
-      tabLabel: 'Vítimas',
+      tabLabel: `Vítimas (${vitimas.length})`,
       component: VitimasTab,
-      props: { vitimas, onAddVitima: handleAddVitima }
+      props: { 
+        vitimas, 
+        onAddVitima: handleAddVitima,
+        onVitimaPress: handleVitimaPress 
+      }
     }
   ];
 
@@ -601,6 +540,14 @@ export default function CaseDetails() {
         evidencias={evidencias}
         vitimas={vitimas}
         onRelatorioAdded={handleRelatorioAdded}
+      />
+
+      {/* Modal para adicionar vítima */}
+      <ModalNovaVitima
+        visible={showVitimaModal}
+        onClose={() => setShowVitimaModal(false)}
+        casoId={id}
+        onVitimaCreated={handleVitimaAdded}
       />
     </View>
   );
