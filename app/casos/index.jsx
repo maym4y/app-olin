@@ -19,7 +19,7 @@ const API_URL = "https://case-api-icfc.onrender.com";
 
 // Função para formatar data
 const formatarData = (dataString) => {
-  const data = new Date(dataString);
+  const data = new Date(JSON.stringify(dataString));
   return data.toLocaleDateString('pt-BR');
 };
 
@@ -148,7 +148,7 @@ const CasoCard = ({ caso }) => {
           fontSize: 12,
           color: '#999'
         }}>
-          Criado: {formatarData(caso.createdAt)}
+          Criado: {formatarData(caso.data)}
         </Text>
         <Text style={{
           fontSize: 12,
@@ -198,7 +198,6 @@ export default function ListCases() {
         const dataB = new Date(b.ultimaAtualizacao || b.updatedAt);
         return dataB - dataA;
       });
-
       setCasos(casosOrdenados);
     } catch (error) {
       console.error('Erro ao buscar casos:', error);

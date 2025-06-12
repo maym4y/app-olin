@@ -14,7 +14,7 @@ import {
   ScrollView,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { colors } from "../../constants/colors";
 
@@ -23,59 +23,48 @@ const API_URL = "https://case-api-icfc.onrender.com";
 // Função para obter ícone baseado no tipo de arquivo
 const getIconeArquivo = (tipoArquivo) => {
   switch (tipoArquivo) {
-    case 'imagem':
-      return 'image';
-    case 'documento':
-      return 'description';
-    case 'audio':
-      return 'mic';
+    case "imagem":
+      return "image";
+    case "documento":
+      return "description";
+    case "audio":
+      return "mic";
     default:
-      return 'attachment';
+      return "attachment";
   }
 };
 
-export default function EditEvidenceModal({ 
-  visible, 
-  onClose, 
-  evidence, 
-  onEvidenceAdded
-}) {
+export default function EditEvidenceModal({ visible, onClose, evidence }) {
   const [loading, setLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [loadingLocation, setLoadingLocation] = useState(false);
-  
+
   // Estados dos campos do formulário
   const [formData, setFormData] = useState({
     titulo: evidence.titulo,
     descricao: evidence.descricao,
     localColeta: evidence.localColeta,
-    dataColeta: evidence.dataColeta,
-    arquivo: evidence?.arquivo,
-    tipoArquivo: evidence.tipoArquito
+    dataColeta: new Date(evidence.dataColeta),
+    arquivo: evidence.arquivo,
+    tipoArquivo: evidence.tipoArquivo,
   });
 
-  // Buscar localização automática quando o modal abre
-  useEffect(() => {
-    if (visible) {
-      buscarLocalizacaoAutomatica();
-    }
-  }, [visible]);
+  const id = evidence.id || evidence._id;
+  const casoId = evidence.caso;
 
   // Função para buscar localização automática
   const buscarLocalizacaoAutomatica = async () => {
     try {
       setLoadingLocation(true);
-      
+
       // Solicitar permissão de localização
       const { status } = await Location.requestForegroundPermissionsAsync();
-      
-      if (status !== 'granted') {
+
+      if (status !== "granted") {
         Alert.alert(
           "Permissão de Localização",
           "Para preencher automaticamente o local da coleta, é necessário permitir o acesso à localização.",
-          [
-            { text: "Entendi", style: "default" }
-          ]
+          [{ text: "Entendi", style: "default" }]
         );
         return;
       }
@@ -94,11 +83,10 @@ export default function EditEvidenceModal({
       if (reverseGeocode.length > 0) {
         const endereco = reverseGeocode[0];
         const localFormatado = formatarEndereco(endereco);
-        updateField('localColeta', localFormatado);
+        updateField("localColeta", localFormatado);
       }
-
     } catch (error) {
-      console.error('Erro ao buscar localização:', error);
+      console.error("Erro ao buscar localização:", error);
       // Não mostra alerta para não incomodar o usuário
     } finally {
       setLoadingLocation(false);
@@ -108,14 +96,14 @@ export default function EditEvidenceModal({
   // Função para formatar o endereço
   const formatarEndereco = (endereco) => {
     const partes = [];
-    
+
     if (endereco.street) partes.push(endereco.street);
     if (endereco.streetNumber) partes.push(endereco.streetNumber);
     if (endereco.district) partes.push(endereco.district);
     if (endereco.city) partes.push(endereco.city);
     if (endereco.region) partes.push(endereco.region);
-    
-    return partes.join(', ') || 'Localização obtida automaticamente';
+
+    return partes.join(", ") || "Localização obtida automaticamente";
   };
   // Função para resetar o formulário
   const resetForm = () => {
@@ -125,15 +113,15 @@ export default function EditEvidenceModal({
       localColeta: "",
       dataColeta: new Date(),
       arquivo: null,
-      tipoArquivo: ""
+      tipoArquivo: "",
     });
   };
 
   // Função para atualizar campos do formulário
   const updateField = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -145,20 +133,20 @@ export default function EditEvidenceModal({
       [
         {
           text: "Cancelar",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "📷 Tirar Foto",
-          onPress: abrirCamera
+          onPress: abrirCamera,
         },
         {
           text: "🖼️ Galeria",
-          onPress: abrirGaleria
+          onPress: abrirGaleria,
         },
         {
           text: "📄 Documento",
-          onPress: abrirDocumentos
-        }
+          onPress: abrirDocumentos,
+        },
       ]
     );
   };
@@ -166,8 +154,9 @@ export default function EditEvidenceModal({
   // Abrir câmera para tirar foto
   const abrirCamera = async () => {
     try {
-      const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-      
+      const permissionResult =
+        await ImagePicker.requestCameraPermissionsAsync();
+
       if (!permissionResult.granted) {
         Alert.alert("Erro", "Permissão de câmera necessária!");
         return;
@@ -181,11 +170,11 @@ export default function EditEvidenceModal({
       });
 
       if (!result.canceled && result.assets[0]) {
-        updateField('arquivo', result.assets[0]);
-        updateField('tipoArquivo', 'imagem');
+        updateField("arquivo", result.assets[0]);
+        updateField("tipoArquivo", "imagem");
       }
     } catch (error) {
-      console.error('Erro ao abrir câmera:', error);
+      console.error("Erro ao abrir câmera:", error);
       Alert.alert("Erro", "Falha ao abrir a câmera.");
     }
   };
@@ -193,8 +182,9 @@ export default function EditEvidenceModal({
   // Abrir galeria de fotos
   const abrirGaleria = async () => {
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
       if (!permissionResult.granted) {
         Alert.alert("Erro", "Permissão de galeria necessária!");
         return;
@@ -208,11 +198,11 @@ export default function EditEvidenceModal({
       });
 
       if (!result.canceled && result.assets[0]) {
-        updateField('arquivo', result.assets[0]);
-        updateField('tipoArquivo', 'imagem');
+        updateField("arquivo", result.assets[0]);
+        updateField("tipoArquivo", "imagem");
       }
     } catch (error) {
-      console.error('Erro ao abrir galeria:', error);
+      console.error("Erro ao abrir galeria:", error);
       Alert.alert("Erro", "Falha ao abrir a galeria.");
     }
   };
@@ -221,16 +211,20 @@ export default function EditEvidenceModal({
   const abrirDocumentos = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
-        copyToCacheDirectory: true
+        type: [
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ],
+        copyToCacheDirectory: true,
       });
 
       if (!result.canceled && result.assets[0]) {
-        updateField('arquivo', result.assets[0]);
-        updateField('tipoArquivo', 'documento');
+        updateField("arquivo", result.assets[0]);
+        updateField("tipoArquivo", "documento");
       }
     } catch (error) {
-      console.error('Erro ao abrir documentos:', error);
+      console.error("Erro ao abrir documentos:", error);
       Alert.alert("Erro", "Falha ao selecionar documento.");
     }
   };
@@ -241,17 +235,17 @@ export default function EditEvidenceModal({
       Alert.alert("Erro", "Título é obrigatório.");
       return false;
     }
-    
+
     if (!formData.descricao.trim()) {
       Alert.alert("Erro", "Descrição é obrigatória.");
       return false;
     }
-    
+
     if (!formData.localColeta.trim()) {
       Alert.alert("Erro", "Local da coleta é obrigatório.");
       return false;
     }
-    
+
     if (!formData.arquivo) {
       Alert.alert("Erro", "Arquivo da evidência é obrigatório.");
       return false;
@@ -265,62 +259,77 @@ export default function EditEvidenceModal({
     if (!validarFormulario()) return;
 
     setLoading(true);
-    
+
     try {
-      const token = await AsyncStorage.getItem('token');
-      
+      const token = await AsyncStorage.getItem("token");
+
       // Criar FormData para upload
       const formDataToSend = new FormData();
-      
-      formDataToSend.append('titulo', formData.titulo);
-      formDataToSend.append('descricao', formData.descricao);
-      formDataToSend.append('localColeta', formData.localColeta);
-      formDataToSend.append('dataColeta', formData.dataColeta.toISOString());
-      formDataToSend.append('caso', casoId);
-      
+
+      formDataToSend.append("titulo", formData.titulo);
+      formDataToSend.append("descricao", formData.descricao);
+      formDataToSend.append("localColeta", formData.localColeta);
+      formDataToSend.append("dataColeta", formData.dataColeta.toISOString());
+      formDataToSend.append("caso", casoId);
+
       // Preparar arquivo para upload
       const arquivoUpload = {
         uri: formData.arquivo.uri,
-        type: formData.arquivo.mimeType || (formData.tipoArquivo === 'imagem' ? 'image/jpeg' : 'application/pdf'),
-        name: formData.arquivo.name || `evidencia_${Date.now()}.${formData.tipoArquivo === 'imagem' ? 'jpg' : 'pdf'}`
+        type:
+          formData.arquivo.mimeType ||
+          (formData.tipoArquivo === "imagem"
+            ? "image/jpeg"
+            : "application/pdf"),
+        name:
+          formData.arquivo.name ||
+          `evidencia_${Date.now()}.${
+            formData.tipoArquivo === "imagem" ? "jpg" : "pdf"
+          }`,
       };
-      
-      formDataToSend.append('arquivo', arquivoUpload);
 
-      const response = await axios.post(`${API_URL}/api/evidencias`, formDataToSend, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      formDataToSend.append("arquivo", arquivoUpload);
 
-      Alert.alert("Sucesso", "Evidência cadastrada com sucesso!", [
+      const response = await axios.put(
+        `${API_URL}/api/evidencias/${id}`,
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      Alert.alert("Sucesso", "Evidência editada com sucesso!", [
         {
           text: "OK",
           onPress: () => {
-            resetForm();
             onClose();
-            if (onEvidenceAdded) {
-              onEvidenceAdded(response.data.evidencia);
-            }
-          }
-        }
+          },
+        },
       ]);
-
     } catch (error) {
-      console.error('Erro ao enviar evidência:', error);
-      
-      const mensagemErro = error.response?.data?.message || 'Erro ao cadastrar evidência.';
+      console.error("Erro ao enviar evidência:", error);
+
+      const mensagemErro =
+        error.response?.data?.message || "Erro ao cadastrar evidência.";
       Alert.alert("Erro", mensagemErro);
     } finally {
       setLoading(false);
+      setFormData({
+        titulo: evidence.titulo,
+        descricao: evidence.descricao,
+        localColeta: evidence.localColeta,
+        dataColeta: new Date(evidence.dataColeta),
+        arquivo: evidence.arquivo,
+        tipoArquivo: evidence.tipoArquivo,
+      });
     }
   };
 
   // Função para fechar modal
   const handleClose = () => {
     if (!loading) {
-      resetForm();
       onClose();
     }
   };
@@ -332,34 +341,38 @@ export default function EditEvidenceModal({
       presentationStyle="pageSheet"
       onRequestClose={handleClose}
     >
-      <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+      <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
         {/* Header */}
-        <View style={{
-          backgroundColor: 'white',
-          paddingTop: 50,
-          paddingHorizontal: 20,
-          paddingBottom: 15,
-          borderBottomWidth: 1,
-          borderBottomColor: '#e0e0e0',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Text style={{
-            fontSize: 24,
-            fontWeight: 'bold',
-            color: '#333'
-          }}>
-            Nova Evidência
+        <View
+          style={{
+            backgroundColor: "white",
+            paddingTop: 50,
+            paddingHorizontal: 20,
+            paddingBottom: 15,
+            borderBottomWidth: 1,
+            borderBottomColor: "#e0e0e0",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              color: "#333",
+            }}
+          >
+            Editar Evidência
           </Text>
-          
-          <Pressable 
+
+          <Pressable
             onPress={handleClose}
             disabled={loading}
             style={{
               padding: 8,
               borderRadius: 20,
-              backgroundColor: '#f0f0f0'
+              backgroundColor: "#f0f0f0",
             }}
           >
             <AntDesign name="close" size={20} color="#666" />
@@ -370,54 +383,58 @@ export default function EditEvidenceModal({
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
           {/* Título */}
           <View style={{ marginBottom: 20 }}>
-            <Text style={{
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: '#333',
-              marginBottom: 8
-            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#333",
+                marginBottom: 8,
+              }}
+            >
               Título da Evidência *
             </Text>
             <TextInput
               style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
                 borderRadius: 8,
                 padding: 15,
                 fontSize: 16,
                 borderWidth: 1,
-                borderColor: '#e0e0e0'
+                borderColor: "#e0e0e0",
               }}
               placeholder="Ex: Documento de identidade da vítima"
               value={formData.titulo}
-              onChangeText={(text) => updateField('titulo', text)}
+              onChangeText={(text) => updateField("titulo", text)}
               editable={!loading}
             />
           </View>
 
           {/* Descrição */}
           <View style={{ marginBottom: 20 }}>
-            <Text style={{
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: '#333',
-              marginBottom: 8
-            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#333",
+                marginBottom: 8,
+              }}
+            >
               Descrição *
             </Text>
             <TextInput
               style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
                 borderRadius: 8,
                 padding: 15,
                 fontSize: 16,
                 borderWidth: 1,
-                borderColor: '#e0e0e0',
+                borderColor: "#e0e0e0",
                 minHeight: 100,
-                textAlignVertical: 'top'
+                textAlignVertical: "top",
               }}
               placeholder="Descreva os detalhes da evidência..."
               value={formData.descricao}
-              onChangeText={(text) => updateField('descricao', text)}
+              onChangeText={(text) => updateField("descricao", text)}
               multiline
               numberOfLines={4}
               editable={!loading}
@@ -426,28 +443,34 @@ export default function EditEvidenceModal({
 
           {/* Local da Coleta */}
           <View style={{ marginBottom: 20 }}>
-            <View style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 8
-            }}>
-              <Text style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: '#333'
-              }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 8,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "#333",
+                }}
+              >
                 Local da Coleta *
               </Text>
-              
+
               <Pressable
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  flexDirection: "row",
+                  alignItems: "center",
                   paddingHorizontal: 8,
                   paddingVertical: 4,
                   borderRadius: 6,
-                  backgroundColor: loadingLocation ? '#f0f0f0' : colors.steelBlue
+                  backgroundColor: loadingLocation
+                    ? "#f0f0f0"
+                    : colors.steelBlue,
                 }}
                 onPress={buscarLocalizacaoAutomatica}
                 disabled={loading || loadingLocation}
@@ -457,40 +480,44 @@ export default function EditEvidenceModal({
                 ) : (
                   <MaterialIcons name="my-location" size={16} color="white" />
                 )}
-                <Text style={{
-                  fontSize: 12,
-                  color: loadingLocation ? '#666' : 'white',
-                  marginLeft: 4,
-                  fontWeight: 'bold'
-                }}>
-                  {loadingLocation ? 'Obtendo...' : 'Auto'}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: loadingLocation ? "#666" : "white",
+                    marginLeft: 4,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {loadingLocation ? "Obtendo..." : "Auto"}
                 </Text>
               </Pressable>
             </View>
-            
+
             <TextInput
               style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
                 borderRadius: 8,
                 padding: 15,
                 fontSize: 16,
                 borderWidth: 1,
-                borderColor: '#e0e0e0'
+                borderColor: "#e0e0e0",
               }}
               placeholder="Ex: Delegacia Central - Setor de Perícia"
               value={formData.localColeta}
-              onChangeText={(text) => updateField('localColeta', text)}
+              onChangeText={(text) => updateField("localColeta", text)}
               editable={!loading && !loadingLocation}
               multiline
             />
-            
+
             {loadingLocation && (
-              <Text style={{
-                fontSize: 12,
-                color: '#666',
-                marginTop: 4,
-                fontStyle: 'italic'
-              }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "#666",
+                  marginTop: 4,
+                  fontStyle: "italic",
+                }}
+              >
                 Obtendo localização automática...
               </Text>
             )}
@@ -498,33 +525,37 @@ export default function EditEvidenceModal({
 
           {/* Data da Coleta */}
           <View style={{ marginBottom: 20 }}>
-            <Text style={{
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: '#333',
-              marginBottom: 8
-            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#333",
+                marginBottom: 8,
+              }}
+            >
               Data da Coleta *
             </Text>
             <Pressable
               style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
                 borderRadius: 8,
                 padding: 15,
                 borderWidth: 1,
-                borderColor: '#e0e0e0',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                borderColor: "#e0e0e0",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
               onPress={() => !loading && setShowDatePicker(true)}
               disabled={loading}
             >
-              <Text style={{
-                fontSize: 16,
-                color: '#333'
-              }}>
-                {formData.dataColeta.toLocaleDateString('pt-BR')}
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "#333",
+                }}
+              >
+                {formData.dataColeta.toLocaleDateString("pt-BR")}
               </Text>
               <MaterialIcons name="calendar-today" size={20} color="#666" />
             </Pressable>
@@ -532,76 +563,90 @@ export default function EditEvidenceModal({
 
           {/* Arquivo */}
           <View style={{ marginBottom: 20 }}>
-            <Text style={{
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: '#333',
-              marginBottom: 8
-            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#333",
+                marginBottom: 8,
+              }}
+            >
               Arquivo da Evidência *
             </Text>
-            
+
             <Pressable
               style={{
-                backgroundColor: formData.arquivo ? colors.lightGray : 'white',
+                backgroundColor: formData.arquivo ? colors.lightGray : "white",
                 borderRadius: 8,
                 padding: 15,
                 borderWidth: 1,
-                borderColor: formData.arquivo ? colors.steelBlue : '#e0e0e0',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 60
+                borderColor: formData.arquivo ? colors.steelBlue : "#e0e0e0",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 60,
               }}
               onPress={selecionarArquivo}
               disabled={loading}
             >
               {formData.arquivo ? (
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  flex: 1
-                }}>
-                  <MaterialIcons 
-                    name={getIconeArquivo(formData.tipoArquivo)} 
-                    size={24} 
-                    color={colors.steelBlue} 
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flex: 1,
+                  }}
+                >
+                  <MaterialIcons
+                    name={getIconeArquivo(formData.tipoArquivo)}
+                    size={24}
+                    color={colors.steelBlue}
                   />
                   <View style={{ marginLeft: 12, flex: 1 }}>
-                    <Text style={{
-                      fontSize: 14,
-                      fontWeight: 'bold',
-                      color: '#333'
-                    }}>
-                      {formData.arquivo.name || 'Arquivo selecionado'}
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: "bold",
+                        color: "#333",
+                      }}
+                    >
+                      {formData.arquivo.name || "Arquivo selecionado"}
                     </Text>
-                    <Text style={{
-                      fontSize: 12,
-                      color: '#666',
-                      textTransform: 'capitalize'
-                    }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#666",
+                        textTransform: "capitalize",
+                      }}
+                    >
                       {formData.tipoArquivo}
                     </Text>
                   </View>
                   <AntDesign name="check" size={20} color={colors.steelBlue} />
                 </View>
               ) : (
-                <View style={{
-                  alignItems: 'center'
-                }}>
+                <View
+                  style={{
+                    alignItems: "center",
+                  }}
+                >
                   <MaterialIcons name="add-a-photo" size={32} color="#999" />
-                  <Text style={{
-                    fontSize: 16,
-                    color: '#999',
-                    marginTop: 8
-                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: "#999",
+                      marginTop: 8,
+                    }}
+                  >
                     Selecionar Arquivo
                   </Text>
-                  <Text style={{
-                    fontSize: 12,
-                    color: '#ccc',
-                    marginTop: 4
-                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: "#ccc",
+                      marginTop: 4,
+                    }}
+                  >
                     Foto ou documento
                   </Text>
                 </View>
@@ -610,28 +655,32 @@ export default function EditEvidenceModal({
           </View>
 
           {/* Botões de ação */}
-          <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: 30,
-            gap: 15
-          }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 30,
+              gap: 15,
+            }}
+          >
             <Pressable
               style={{
                 flex: 1,
-                backgroundColor: '#f0f0f0',
+                backgroundColor: "#f0f0f0",
                 paddingVertical: 15,
                 borderRadius: 8,
-                alignItems: 'center'
+                alignItems: "center",
               }}
               onPress={handleClose}
               disabled={loading}
             >
-              <Text style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: '#666'
-              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "#666",
+                }}
+              >
                 Cancelar
               </Text>
             </Pressable>
@@ -639,29 +688,31 @@ export default function EditEvidenceModal({
             <Pressable
               style={{
                 flex: 1,
-                backgroundColor: loading ? '#ccc' : colors.midnightNavy,
+                backgroundColor: loading ? "#ccc" : colors.midnightNavy,
                 paddingVertical: 15,
                 borderRadius: 8,
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'center'
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "center",
               }}
               onPress={enviarEvidencia}
               disabled={loading}
             >
               {loading && (
-                <ActivityIndicator 
-                  size="small" 
-                  color="white" 
-                  style={{ marginRight: 8 }} 
+                <ActivityIndicator
+                  size="small"
+                  color="white"
+                  style={{ marginRight: 8 }}
                 />
               )}
-              <Text style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: 'white'
-              }}>
-                {loading ? 'Salvando...' : 'Salvar Evidência'}
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                {loading ? "Salvando..." : "Salvar Evidência"}
               </Text>
             </Pressable>
           </View>
@@ -676,7 +727,7 @@ export default function EditEvidenceModal({
             onChange={(event, selectedDate) => {
               setShowDatePicker(false);
               if (selectedDate) {
-                updateField('dataColeta', selectedDate);
+                updateField("dataColeta", selectedDate);
               }
             }}
             maximumDate={new Date()}
